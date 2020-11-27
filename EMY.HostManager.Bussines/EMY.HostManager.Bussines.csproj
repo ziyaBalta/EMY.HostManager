@@ -4,4 +4,9 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EMY.HostManager.DataAccess\EMY.HostManager.DataAccess.csproj" />
+    <ProjectReference Include="..\EMY.HostManager.Entities\EMY.HostManager.Entities.csproj" />
+  </ItemGroup>
+
 </Project>
