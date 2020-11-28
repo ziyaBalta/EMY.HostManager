@@ -28,7 +28,7 @@ namespace EMY.HostManager.Bussines.Concrete
             await repository.Remove(ID, DeleterRef);
         }
 
-        public override async Task<List<Template>> GetAll()
+        public override async Task<IEnumerable<Template>> GetAll()
         {
             var result = (await repository.GetAll()).Where(obj => !obj.IsDeleted).ToList();
             return result;

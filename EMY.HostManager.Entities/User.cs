@@ -22,15 +22,14 @@ namespace EMY.HostManager.Entities
         [Key]
         public int UserID { get; set; }
 
-        public int? MasterUserID { get; set; }
         public int UserCode { get; set; }
-        public int CardHolderID { get; set; }
+
         public string Name { get; set; }
         public string LastName { get; set; }
         [NotMapped]
         public string GetName { get { return ToString(); } }
         public string UserName { get; set; }
-        public string PasswordStored { private get; set; }
+        public string PasswordStored { get; set; }
 
         [NotMapped]
         public string Password
@@ -45,7 +44,7 @@ namespace EMY.HostManager.Entities
         }
 
 
-        public string Authorizes { get; set; }
+
         public bool IsActive { get; set; }
 
         public static string GetPasswordSha512(string password)

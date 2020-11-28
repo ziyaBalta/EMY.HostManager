@@ -8,7 +8,7 @@ namespace EMY.HostManager.Bussines.Abstract
     public abstract class AbstractTemplateService
     {
         public abstract Task<Template> GetByTeplateID(int TeplateID);
-        public abstract Task<List<Template>> GetAll();
+        public abstract Task<IEnumerable<Template>> GetAll();
         public abstract Task Add(Template newTemplate, int adderRef);
         public abstract Task Update(Template template, int updaterRef);
         public async Task Delete(Template template, int deleterRef)

@@ -18,6 +18,8 @@ namespace EMY.HostManager.Bussines.Abstract
         public abstract Task<IEnumerable<string>> GetAllRoles(int UserID);
         public abstract Task AddRole(UserRole newRole, int adderRef);
         public abstract Task RemoveRole(int RoleID, int removerRef);
-        public abstract Task ClearAllRoles(int UserID, int removerRef)
+        public abstract Task ClearAllRoles(int UserID, int removerRef);
+        public abstract Task<ResultModel> CheckLoginUser(string userName, string password);
+
     }
 }

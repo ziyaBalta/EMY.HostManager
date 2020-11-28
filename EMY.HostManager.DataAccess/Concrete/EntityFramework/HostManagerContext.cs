@@ -70,9 +70,10 @@ namespace EMY.HostManager.DataAccess.Concrete.EntityFramework
         public DbSet<Template> Templates { get; set; }
         public DbSet<TemplateParameter> TemplateParameters { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
 
         #endregion
-       
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -99,7 +100,7 @@ namespace EMY.HostManager.DataAccess.Concrete.EntityFramework
 
 
         }
-      
+
         #region SaveChangesOverrides
         public override int SaveChanges()
         {

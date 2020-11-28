@@ -1,0 +1,82 @@
+﻿@model IEnumerable<EMY.HostManager.Entities.ServerInformation>
+
+@{
+    ViewData["Title"] = "Server List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">Servers</h1>
+@if (User.IsInRole("ServerAdd") || User.IsInRole("AdminFull") || User.IsInRole("ServerFull"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-sm btn-outline-light border-dark btn-dark">
+            <i class="lni lni-add-files"></i> Create New
+        </a>
+    </p>
+}
+<table class="table table-hover table-responsive-xl">
+    <thead class="thead-dark">
+        <tr>
+            <th colspan="8">Server List</th>
+        </tr>
+        <tr>
+            <th>
+                <i class="lni lni-line-dashed"></i>
+            </th>
+            <th>
+                Server Name
+            </th>
+            <th>
+                Server Type
+            </th>
+            <th>
+                Adress
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Port)
+            </th>
+            <th>
+                User Name
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Password)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServerInformationID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServerType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServerAdress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Port)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @("".PadLeft(item.Password.Length,'•'))
+                </td>
+
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { ServerInformationID = item.ServerInformationID }) |
+                    @Html.ActionLink("Details", "Details", new { ServerInformationID = item.ServerInformationID }) |
+                    @Html.ActionLink("Delete", "Delete", new { ServerInformationID = item.ServerInformationID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -35,7 +35,8 @@ namespace EMY.HostManager.DataAccess.Concrete
 
         public async Task<T> FirstOrDefault(Expression<Func<T, bool>> predicate)
         {
-            return await table.FirstOrDefaultAsync<T>(predicate);
+            var result = await table.FirstOrDefaultAsync<T>(predicate);
+            return result;
         }
 
         async Task IAsyncRepository<T>.Add(T entity, int UserRef)

@@ -79,5 +79,34 @@ namespace EMY.HostManager.Bussines.Concrete
                 await userRoleRepository.Remove(role.UserRoleID, removerRef);
             }
         }
+
+        public override async Task<ResultModel> CheckLoginUser(string userName, string password)
+        {
+            ResultModel resultModel = new ResultModel();
+
+            var user = await repository.FirstOrDefault(o => !o.IsDeleted && o.UserName.ToLower() == userName.ToLower());
+
+            resultModel.IsSuccess = false;
+            if (user == null)
+            {
+                resultModel.Message = "This user is not exist!";
+                resultModel.resultType = -1;
+            }
+            else if (!user.PasswordControl(password))
+            {
+                resultModel.Message = "This user password is wrong!";
+                resultModel.resultType = 0;
+            }
+            else
+            {
+                resultModel.Data = user;
+                resultModel.IsSuccess = user.IsActive;
+                resultModel.Message = user.IsActive ? "User can log in!" : "User is deactivated!";
+                resultModel.resultType = user.IsActive ? 1 : 0;
+
+            }
+
+            return resultModel;
+        }
     }
 }

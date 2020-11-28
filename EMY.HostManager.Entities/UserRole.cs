@@ -26,7 +26,7 @@ namespace EMY.HostManager.Entities
                     AuthType.Add => FormName + "Add",
                     AuthType.Delete => FormName + "Del",
                     AuthType.Update => FormName + "Up",
-                    AuthType.Full => FormName + "All",
+                    AuthType.Full => FormName + "Full",
                     _ => throw new NotSupportedException()
                 };
             }
