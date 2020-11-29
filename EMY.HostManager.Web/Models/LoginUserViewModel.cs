@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace EMY.HostManager.Web.Models
+﻿namespace EMY.HostManager.Web.Models
 {
     public class LoginUserViewModel
     {

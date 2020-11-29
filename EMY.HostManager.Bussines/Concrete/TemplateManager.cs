@@ -34,6 +34,12 @@ namespace EMY.HostManager.Bussines.Concrete
             return result;
         }
 
+        public override async Task<Template> GetByTemplateName(string templateName)
+        {
+            var result = await repository.FirstOrDefault(o => o.TemplateName == templateName && !o.IsDeleted);
+            return result;
+        }
+
         public override async Task<Template> GetByTeplateID(int TeplateID)
         {
             var result = await repository.GetByPrimaryKey(TeplateID);

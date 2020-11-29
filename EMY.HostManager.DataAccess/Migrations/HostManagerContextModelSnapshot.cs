@@ -16,6 +16,46 @@ namespace EMY.HostManager.DataAccess.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.0");
 
+            modelBuilder.Entity("EMY.HostManager.Entities.DomainInformation", b =>
+                {
+                    b.Property<int>("DomainInformationID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreatorID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DeletedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DeleterID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DomainAdress")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DomainName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("LastUpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("LastUpdaterID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DomainInformationID");
+
+                    b.ToTable("tblDomainInformations");
+                });
+
             modelBuilder.Entity("EMY.HostManager.Entities.ServerInformation", b =>
                 {
                     b.Property<int>("ServerInformationID")
@@ -50,15 +90,18 @@ namespace EMY.HostManager.DataAccess.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ServerAdress")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ServerName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ServerType")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ServerInformationID");

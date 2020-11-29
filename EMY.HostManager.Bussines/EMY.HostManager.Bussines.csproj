@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ChilkatDnCore" Version="9.5.0.84" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EMY.HostManager.DataAccess\EMY.HostManager.DataAccess.csproj" />
     <ProjectReference Include="..\EMY.HostManager.Entities\EMY.HostManager.Entities.csproj" />
   </ItemGroup>

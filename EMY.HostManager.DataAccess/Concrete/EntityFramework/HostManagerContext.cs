@@ -71,6 +71,7 @@ namespace EMY.HostManager.DataAccess.Concrete.EntityFramework
         public DbSet<TemplateParameter> TemplateParameters { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<DomainInformation> Domains { get; set; }
 
         #endregion
 

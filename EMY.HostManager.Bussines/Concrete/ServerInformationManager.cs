@@ -3,10 +3,7 @@ using EMY.HostManager.DataAccess.Abstract;
 using EMY.HostManager.DataAccess.Concrete;
 using EMY.HostManager.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EMY.HostManager.Bussines.Concrete
@@ -27,6 +24,12 @@ namespace EMY.HostManager.Bussines.Concrete
         public async override Task Delete(ServerInformation serverInformation, int deleterRef)
         {
             await repository.Remove(serverInformation.ServerInformationID, deleterRef);
+        }
+
+        public override async Task<ServerInformation> GetServerByName(string serverName)
+        {
+            var result = await repository.FirstOrDefault(o => o.ServerName == serverName && !o.IsDeleted);
+            return result;
         }
 
         public override async Task<ServerInformation> GetServerInformationByServerInformationID(int ServerInformationID)

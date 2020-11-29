@@ -4,7 +4,6 @@ using EMY.HostManager.Web.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -38,8 +37,10 @@ namespace EMY.HostManager.Web.Controllers
             if (res.IsSuccess && res.resultType == 1)
             {
                 var loggedinUser = (User)res.Data;
-                List<Claim> mainClaim = new List<Claim>() {
-                    new Claim(ClaimTypes.Name, loggedinUser.GetName)
+                List<Claim> mainClaim = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.NameIdentifier, loggedinUser.GetName),
+                    new Claim(ClaimTypes.Name, loggedinUser.UserID.ToString())
                 };
 
                 var authList = await factory.Users.GetAllRoles(loggedinUser.UserID);
@@ -56,8 +57,8 @@ namespace EMY.HostManager.Web.Controllers
 
                 await HttpContext.SignInAsync(
                     SystemStatics.DefaultScheme,
-                    userPrincipal
-                    ,new AuthenticationProperties{IsPersistent = login.RememberMe}
+                    userPrincipal,
+                    new AuthenticationProperties { IsPersistent = login.RememberMe }
                     );
                 return RedirectToAction("Index", "Home");
             }

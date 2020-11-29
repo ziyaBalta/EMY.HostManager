@@ -9,14 +9,54 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EMY.HostManager.DataAccess.Migrations
 {
     [DbContext(typeof(HostManagerContext))]
-    [Migration("20201128043000_20201127_22_29")]
-    partial class _20201127_22_29
+    [Migration("20201129192604_v1")]
+    partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.0");
+
+            modelBuilder.Entity("EMY.HostManager.Entities.DomainInformation", b =>
+                {
+                    b.Property<int>("DomainInformationID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CreatorID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DeletedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DeleterID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DomainAdress")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DomainName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("LastUpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("LastUpdaterID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("DomainInformationID");
+
+                    b.ToTable("tblDomainInformations");
+                });
 
             modelBuilder.Entity("EMY.HostManager.Entities.ServerInformation", b =>
                 {
@@ -52,15 +92,18 @@ namespace EMY.HostManager.DataAccess.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ServerAdress")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ServerName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ServerType")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("ServerInformationID");

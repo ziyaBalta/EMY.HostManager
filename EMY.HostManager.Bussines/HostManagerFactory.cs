@@ -2,11 +2,6 @@
 using EMY.HostManager.Bussines.Concrete;
 using EMY.HostManager.DataAccess.Concrete.EntityFramework;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EMY.HostManager.Bussines
 {
@@ -41,10 +36,12 @@ namespace EMY.HostManager.Bussines
             Templates = new TemplateManager(context);
             Users = new UserManager(context);
             ServerInformations = new ServerInformationManager(context);
+            Domains = new DomainInformationManager(context);
         }
 
         public AbstractTemplateService Templates { get; set; }
         public AbstractUserService Users { get; set; }
         public AbstractServerInformationService ServerInformations { get; set; }
+        public AbstractDomainService Domains { get; set; }
     }
 }

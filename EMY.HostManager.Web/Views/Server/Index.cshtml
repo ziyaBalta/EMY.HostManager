@@ -10,11 +10,12 @@
 {
     <p>
         <a asp-action="Create" class="btn btn-sm btn-outline-light border-dark btn-dark">
-            <i class="lni lni-add-files"></i> Create New
+            <i class="lni lni-circle-plus"></i> Create New
         </a>
     </p>
 }
-<table class="table table-hover table-responsive-xl">
+
+<table class="table table-hover table-responsive">
     <thead class="thead-dark">
         <tr>
             <th colspan="8">Server List</th>
@@ -68,13 +69,31 @@
                     @Html.DisplayFor(modelItem => item.UserName)
                 </td>
                 <td>
-                    @("".PadLeft(item.Password.Length,'•'))
+                    @if (!string.IsNullOrEmpty(item.Password))
+                        @("".PadLeft(item.Password.Length,'•'))
                 </td>
-
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { ServerInformationID = item.ServerInformationID }) |
-                    @Html.ActionLink("Details", "Details", new { ServerInformationID = item.ServerInformationID }) |
-                    @Html.ActionLink("Delete", "Delete", new { ServerInformationID = item.ServerInformationID })
+                    @if (User.IsInRole("ServerUp") || User.IsInRole("AdminFull") || User.IsInRole("ServerFull"))
+                    {
+                        <a href="/Server/Edit?ServerInformationID=@item.ServerInformationID">
+                            <i class="lni lni-slice"></i>
+                        </a>
+                        @Html.Raw(" | ");
+                    }
+                    @if (User.IsInRole("ServerShow") || User.IsInRole("AdminFull") || User.IsInRole("ServerFull"))
+                    {
+                        <a href="/Server/Details?ServerInformationID=@item.ServerInformationID">
+                            <i class="lni lni-question-circle"></i>
+                        </a>
+                        @Html.Raw(" | ");
+                    }
+                    @if (User.IsInRole("ServerDel") || User.IsInRole("AdminFull") || User.IsInRole("ServerFull"))
+                    {
+                        <a href="/Server/Delete?ServerInformationID=@item.ServerInformationID">
+                            <i class="lni lni-circle-minus"></i>
+                        </a>
+                    }
+
                 </td>
             </tr>
         }

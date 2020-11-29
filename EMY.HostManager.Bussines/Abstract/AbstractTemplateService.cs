@@ -15,7 +15,7 @@ namespace EMY.HostManager.Bussines.Abstract
         {
             if (template != null && template.TemplateID > 0)
                 await Delete(template.TemplateID, deleterRef);
-            
+
             else if (template == null)
             {
                 throw new ArgumentNullException("Template is null!");
@@ -30,5 +30,6 @@ namespace EMY.HostManager.Bussines.Abstract
             }
         }
         public abstract Task Delete(int ID, int DeleterRef);
+        public abstract Task<Template> GetByTemplateName(string templateName);
     }
 }

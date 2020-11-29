@@ -1,5 +1,3 @@
-using System;
-
 namespace EMY.HostManager.Web.Models
 {
     public class ErrorViewModel

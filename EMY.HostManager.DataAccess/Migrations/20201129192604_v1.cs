@@ -3,21 +3,42 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EMY.HostManager.DataAccess.Migrations
 {
-    public partial class _20201127_22_29 : Migration
+    public partial class v1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "tblDomainInformations",
+                columns: table => new
+                {
+                    DomainInformationID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DomainName = table.Column<string>(type: "TEXT", nullable: false),
+                    DomainAdress = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatorID = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LastUpdaterID = table.Column<int>(type: "INTEGER", nullable: false),
+                    LastUpdateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DeleterID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblDomainInformations", x => x.DomainInformationID);
+                });
+
             migrationBuilder.CreateTable(
                 name: "tblServerInformations",
                 columns: table => new
                 {
                     ServerInformationID = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    ServerName = table.Column<string>(type: "TEXT", nullable: true),
+                    ServerName = table.Column<string>(type: "TEXT", nullable: false),
                     ServerType = table.Column<int>(type: "INTEGER", nullable: false),
-                    ServerAdress = table.Column<string>(type: "TEXT", nullable: true),
+                    ServerAdress = table.Column<string>(type: "TEXT", nullable: false),
                     Port = table.Column<int>(type: "INTEGER", nullable: false),
-                    UserName = table.Column<string>(type: "TEXT", nullable: true),
+                    UserName = table.Column<string>(type: "TEXT", nullable: false),
                     Password = table.Column<string>(type: "TEXT", nullable: true),
                     CreatorID = table.Column<int>(type: "INTEGER", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false),
@@ -147,6 +168,9 @@ namespace EMY.HostManager.DataAccess.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "tblDomainInformations");
+
             migrationBuilder.DropTable(
                 name: "tblServerInformations");
 

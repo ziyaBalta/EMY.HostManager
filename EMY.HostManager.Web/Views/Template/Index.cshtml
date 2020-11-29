@@ -1,0 +1,73 @@
+﻿@model IEnumerable<EMY.HostManager.Entities.Template>
+
+@{
+    ViewData["Title"] = "Template List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">Templates</h1>
+
+@if (User.IsInRole("TemplateAdd") || User.IsInRole("AdminFull") || User.IsInRole("TemplateFull"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-sm btn-outline-light border-dark btn-dark">
+            <i class="lni lni-circle-plus"></i> Create New
+        </a>
+    </p>
+}
+<table class="table table-hover table-responsive">
+    <thead class="thead-dark">
+        <tr>
+            <th colspan="8">Template List</th>
+        </tr>
+        <tr>
+            <th>
+                <i class="lni lni-line-dashed"></i>
+            </th>
+            <th>
+              Template Name
+            </th>
+            <th>
+              Template Code
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TemplateID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TemplateName)
+                </td>
+                <td>
+                    <i class="lni lni-line-dashed"></i>
+                </td>
+               
+                <td>
+                    @if (User.IsInRole("TemplateUp") || User.IsInRole("AdminFull") || User.IsInRole("TemplateFull"))
+                    {
+                        <a href="/Template/Edit?TemplateID=@item.TemplateID">
+                            <i class="lni lni-slice"></i>
+                        </a>
+                    }
+                    @if (User.IsInRole("TemplateShow") || User.IsInRole("AdminFull") || User.IsInRole("TemplateFull"))
+                    {
+                        <a href="/Template/Details?TemplateID=@item.TemplateID">
+                            <i class="lni lni-question-circle"></i>
+                        </a>
+                    }
+                    @if (User.IsInRole("TemplateDel") || User.IsInRole("AdminFull") || User.IsInRole("TemplateFull"))
+                    {
+                        <a href="/Template/Delete?TemplateID=@item.TemplateID">
+                            <i class="lni lni-circle-minus"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
