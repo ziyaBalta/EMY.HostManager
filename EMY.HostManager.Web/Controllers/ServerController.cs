@@ -21,10 +21,7 @@ namespace EMY.HostManager.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var result = await factory.ServerInformations.GetServerList();
-            var templates = await factory.Templates.GetAll();
-            var domains = await factory.Domains.GetDomainList();
-            ViewBag.Domains = domains;
-            ViewBag.Templates = templates;
+
 
             return View(result);
         }
@@ -78,7 +75,7 @@ namespace EMY.HostManager.Web.Controllers
             {
                 if (!(User.IsInRole("ServerUp") || User.IsInRole("AdminFull") || User.IsInRole("ServerAll")))
                     return Unauthorized();
-                if (ServerNameUniqeControl.ServerInformationID != server.ServerInformationID)
+                if (ServerNameUniqeControl != null && ServerNameUniqeControl.ServerInformationID != server.ServerInformationID)
                 {
                     ViewBag.ErrorMessage = "Server name already exist in database!";
                     return View("CreateOrUpdate", server);

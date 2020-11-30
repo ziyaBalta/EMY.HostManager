@@ -1,0 +1,90 @@
+﻿@model IEnumerable<EMY.HostManager.Entities.User>
+
+@{
+    ViewData["Title"] = "UserList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">User List</h1>
+
+<p>
+    <a class="btn btn-sm btn-outline-light border-dark btn-dark" asp-action="Register"><i class="lni lni-circle-plus"></i> Register</a>
+</p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                <i class="lni lni-line-dashed"></i>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                User Name
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserID)
+                </td>
+
+                <td>
+                    @if (!item.IsActive)
+                    {
+                        <del>
+                            @Html.DisplayFor(modelItem => item.GetName)
+                        </del>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.GetName)
+                    }
+
+                </td>
+                <td>
+                    @if (!item.IsActive)
+                    {
+                        <del>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </del>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    }
+
+                </td>
+
+                <td>
+                    @if (!item.IsActive)
+                    {
+                        <a class="btn btn-sm btn-success" href="/Account/Activate?UserID=@item.UserID">
+                            <i class="lni lni-unlock"></i> Unlock Account
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-sm btn-danger" href="/Account/DeActivate?UserID=@item.UserID">
+                            <i class="lni lni-lock-alt"></i> Lock Account
+                        </a>
+                    }
+
+                    | <a class="btn btn-sm btn-info" href="/Account/ResetPassword?UserID=@item.UserID">
+                        <i class="lni lni-reload"></i> Reset Password(123456)
+                    </a>
+                    | <a class="btn btn-sm btn-dark" href="/Account/Authorizes?UserID=@item.UserID">
+                        <i class="lni lni-checkmark-circle"></i> Authorizes
+                    </a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>

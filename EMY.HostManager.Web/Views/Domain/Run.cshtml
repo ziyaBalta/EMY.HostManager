@@ -1,0 +1,129 @@
+﻿@model EMY.HostManager.Entities.DomainInformation
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Html.HiddenFor(o => Model.DomainInformationID)
+<h1 class="mt-4">Upload</h1>
+<div class="row">
+    <div class="col-md-6 col-sm-12 form-group">
+
+        <label class="control-label" for="TemplateID">Template</label>
+        @Html.DropDownList("TemplateID", ViewBag.templates as SelectList, "Select Template", new { @class = "form-control" })
+
+    </div>
+    <div class="col-md-6 form-group">
+
+        <label class="control-label" for="ServerInformationID">Server</label>
+        @Html.DropDownList("ServerInformationID", ViewBag.servers as SelectList, "Select Server", new { @class = "form-control" })
+
+    </div>
+
+
+</div>
+
+<button class="btn  btn-primary bosluk" onclick="StartProcess();" type="button" id="btnRun">
+    <i class="lni lni-cloud-upload"></i> Upload
+</button>
+
+<div class="alert alert-danger bosluk" id="errorMessage" style="display:none;"> Please select a template and server!</div>
+
+<div id="general">
+
+</div>
+
+
+
+
+
+
+<script>
+
+    function StartProcess() {
+
+
+        var domainref = document.getElementById("DomainInformationID").value;
+
+        var templateref = document.getElementById("TemplateID").value;
+        var serverref = document.getElementById("ServerInformationID").value;
+        if (domainref == '' || templateref == '' || serverref == '') {
+            $("#errorMessage").show();
+
+        } else {
+
+            $("#errorMessage").hide();
+            $('#btnRun').prop("disabled", true);
+            $('#btnRun').html('<span class="spinner-grow text-danger spinner-grow-sm" role="status" aria-hidden="true"></span> Loading...');
+            fileUpload();
+        }
+
+
+    }
+
+    function fileUpload() {
+        $("#spinnerwait").show();
+        var domainref = document.getElementById("DomainInformationID").value;
+        var templateref = document.getElementById("TemplateID").value;
+        var serverref = document.getElementById("ServerInformationID").value;
+        $("#general").html('');
+        $.ajax({
+            url: "/Domain/Upload",
+            type: "POST",
+            data:
+            {
+                DomainInformationID: domainref,
+                TemplateID: templateref,
+                ServerInformationID: serverref
+            },
+            success: function (data) {
+                $("#general").html('<br><div class="alert alert-info" id="FirstResult">Conf Uploaded : <b>' + data + '</b></div>');
+                ServiceTest();
+            }
+        });
+
+
+
+    }
+
+
+    function ServiceTest() {
+        var serverref = document.getElementById("ServerInformationID").value;
+        $.ajax({
+            url: "/Domain/ServiceTest",
+            type: "POST",
+            data:
+            {
+                ServerInformationID: serverref
+            },
+            success: function (data) {
+
+                $("#general").append('<div class="alert alert-info" id="FirstResult">Service Test : <b>' + data + '</b></div>');
+                ServiceReload();
+            }
+        });
+    }
+
+
+    function ServiceReload() {
+
+        var serverref = document.getElementById("ServerInformationID").value;
+
+        $.ajax({
+            url: "/Domain/ServiceReload",
+            type: "POST",
+            data:
+            {
+                ServerInformationID: serverref
+            },
+            success: function (data) {
+
+                $("#general").append('<div class="alert alert-info" id="FirstResult">Service Reload : <b>' + data + '</b></div>');
+                $("#spinnerwait").hide();
+                $('#btnRun').prop("disabled", false);
+                $('#btnRun').html('<i class="lni lni-cloud-upload"></i> Upload');
+            }
+        });
+    }
+
+</script>

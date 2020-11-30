@@ -229,9 +229,6 @@ namespace EMY.HostManager.DataAccess.Migrations
                     b.Property<string>("PasswordStored")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserCode")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("UserName")
                         .HasColumnType("TEXT");
 

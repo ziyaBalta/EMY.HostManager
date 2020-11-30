@@ -1,0 +1,116 @@
+﻿@model EMY.HostManager.Entities.User
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">My Profile</h1>
+
+<div>
+    <h4>Profile Informations</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            <i class="lni lni-line-dashed"></i>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.UserID
+        </dd>
+        <dt class="col-sm-2">
+            Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.GetName
+        </dd>
+        <dt class="col-sm-2">
+            User Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.UserName
+        </dd>
+    </dl>
+</div>
+<hr />
+<div>
+    <h4>Change Password</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Current Password
+        </dt>
+        <dd class="col-sm-10">
+            <input type="password" placeholder="Current Password" min="3" required id="OldPassword" class="form-control" />
+        </dd>
+        <dt class="col-sm-2">
+            New Password
+        </dt>
+        <dd class="col-sm-10">
+            <input type="password" placeholder="New Password" min="3" required id="newPassword" class="form-control" oninput="setPasswordConfirmValidity();" />
+        </dd>
+        <dt class="col-sm-2">
+            Password Check
+        </dt>
+        <dd class="col-sm-10">
+            <input type="password" placeholder="Password Check" min="3" required id="PasswordCheck" class="form-control" oninput="setPasswordConfirmValidity();" />
+        </dd>
+
+    </dl>
+    <button class="btn  btn-primary" onclick="StartProcess();" type="button" id="btnRun">
+        <i class="lni lni-save"></i> Save Changes
+    </button>
+    <br />
+    <br />
+    <div class="alert alert-danger" id="errorMessage" style="display:none;"></div>
+
+    <div id="general">
+
+    </div>
+</div>
+<script>
+    function setPasswordConfirmValidity() {
+        const password1 = document.getElementById('newPassword');
+        const password2 = document.getElementById('PasswordCheck');
+
+        if (password1.value === password2.value) {
+            password2.setCustomValidity('');
+            return true;
+        } else {
+            password2.setCustomValidity('Passwords must match!');
+            return false;
+        }
+    }
+
+    function StartProcess() {
+        if (setPasswordConfirmValidity()) {
+            const OldPassword = document.getElementById('OldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+
+            $.ajax({
+                url: "/Account/ChangeMyPassword",
+                type: "POST",
+                data:
+                {
+                    OldPassword: OldPassword,
+                    newPassword: newPassword
+                },
+                success: function (data) {
+
+                    $("#errorMessage").hide();
+                    $("#general").html('<div class="alert alert-info" id="FirstResult"><b>' + data + '</b></div>');
+                    $("#general").show();
+
+                }, error: function (xhr, ajaxOptions, thrownError) {
+                    $("#errorMessage").html('<b>Please check old password!</b>');
+                    $("#errorMessage").show();
+                    $("#general").hide();
+                }
+
+            });
+
+        }
+
+    }
+
+</script>

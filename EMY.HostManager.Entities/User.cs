@@ -22,8 +22,6 @@ namespace EMY.HostManager.Entities
         [Key]
         public int UserID { get; set; }
 
-        public int UserCode { get; set; }
-
         public string Name { get; set; }
         public string LastName { get; set; }
         [NotMapped]

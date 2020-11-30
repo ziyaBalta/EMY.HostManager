@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -17,11 +18,14 @@ namespace EMY.HostManager.Web.Controllers
         {
             this.factory = new HostManagerFactory();
         }
+
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult Login()
         {
             ViewBag.Error = false;
@@ -29,7 +33,7 @@ namespace EMY.HostManager.Web.Controllers
             LoginUserViewModel login = new LoginUserViewModel();
             return PartialView(login);
         }
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginUserViewModel login)
         {
             CheckAdminUser();
@@ -37,6 +41,7 @@ namespace EMY.HostManager.Web.Controllers
             if (res.IsSuccess && res.resultType == 1)
             {
                 var loggedinUser = (User)res.Data;
+
                 List<Claim> mainClaim = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier, loggedinUser.GetName),
@@ -95,8 +100,7 @@ namespace EMY.HostManager.Web.Controllers
                     UserName = UserName,
                     Password = Password,
                     IsActive = true,
-                    IsDeleted = false,
-                    UserCode = 1
+                    IsDeleted = false
                 };
 
 
@@ -113,6 +117,107 @@ namespace EMY.HostManager.Web.Controllers
 
         }
 
+        [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme)]
+        public async Task<IActionResult> MyProfile()
+        {
+            var user = await factory.Users.GetByUserID(int.Parse(User.Identity.Name));
+            if (user == null) Redirect("/Account/Login");
+            return View(user);
+        }
+        [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme), HttpPost]
+        public async Task<IActionResult> ChangeMyPassword(string OldPassword, string newPassword)
+        {
+            var me = await factory.Users.GetByUserID(int.Parse(User.Identity.Name));
+            if (me.PasswordControl(OldPassword))
+            {
+                await factory.Users.ChangePassword(int.Parse(User.Identity.Name), newPassword);
+                return Ok("Password changed!");
+            }
+            else
+            {
+                return ValidationProblem("Old Password is not match!");
+            }
+        }
+        [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
+        public async Task<IActionResult> UserList()
+        {
+            var userlist = await factory.Users.GetAll();
+            return View(userlist);
+
+        }
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
+        public IActionResult Register()
+        {
+            ViewBag.Error = false;
+            ViewBag.ErrorMessage = "";
+            User usr = new User();
+            return View(usr);
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
+        public async Task<IActionResult> Register(User user)
+        {
+            ViewBag.Error = true;
+            User usr = await factory.Users.GetUserByUserName(user.UserName);
+            if (usr != null)
+            {
+                ViewBag.ErrorMessage = "This user name already registered!";
+                return View(usr);
+            }
+
+            user.Password = "123456";
+            user.IsActive = true;
+            user.IsDeleted = false;
+            await factory.Users.Add(user, int.Parse(User.Identity.Name));
+
+            return Redirect("UserList");
+        }
+
+        [HttpGet, Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
+        public async Task<IActionResult> Activate(int UserID)
+        {
+            await factory.Users.Activate(UserID, int.Parse(User.Identity.Name);
+            return Redirect("UserList");
+
+        }
+
+        [HttpGet, Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
+        public async Task<IActionResult> DeActivate(int UserID)
+        {
+            await factory.Users.DeActivate(UserID, int.Parse(User.Identity.Name);
+            return Redirect("UserList");
+
+        }
+
+        [HttpGet, Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
+        public async Task<IActionResult> ResetPassword(int UserID)
+        {
+            await factory.Users.ChangePassword(UserID, "123456");
+            return Redirect("UserList");
+        }
+
+        [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
+        public async Task<IActionResult> AddRole(int UserID, string RoleName, AuthType rollType)
+        {
+            bool existRole = await factory.Users.CheckRoleIsExist(UserID, RoleName, rollType);
+            if (existRole) return ValidationProblem("Role already exist in system!");
+            var authrole = new UserRole()
+            {
+                FormName = RoleName,
+                AuthorizeType = rollType,
+                UserID = UserID
+            };
+            await factory.Users.AddRole(authrole, UserID);
+            return Ok("Role added!");
+        }
+        [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
+        public async Task<IActionResult> DeleteRole(int UserID, string FormName, AuthType rollType)
+        {
+            await factory.Users.RemoveRole(UserID, FormName, rollType, int.Parse(User.Identity.Name));
+            return Ok("Role Deleted!");
+        }
 
     }
 }

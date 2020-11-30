@@ -56,6 +56,8 @@ namespace EMY.HostManager.Bussines.Concrete
 
         public override async Task<IEnumerable<string>> GetAllRoles(int UserID)
         {
+            var user = await repository.GetByPrimaryKey(UserID);
+            if (user == null || !user.IsActive || !user.IsDeleted) return (new string[] { });
             var AllRoles = await userRoleRepository.GetWhere(o => !o.IsDeleted && o.UserID == UserID);
             List<string> roles = new List<string>();
             return AllRoles.ToList().Select(o => o.GetAuthCode);
@@ -66,10 +68,6 @@ namespace EMY.HostManager.Bussines.Concrete
             await userRoleRepository.Add(newRole, adderRef);
         }
 
-        public override async Task RemoveRole(int RoleID, int removerRef)
-        {
-            await userRoleRepository.Remove(RoleID, removerRef);
-        }
 
         public override async Task ClearAllRoles(int UserID, int removerRef)
         {
@@ -107,6 +105,36 @@ namespace EMY.HostManager.Bussines.Concrete
             }
 
             return resultModel;
+        }
+
+        public override async Task RemoveRole(int UserID, string FormName, AuthType type, int removerRef)
+        {
+            var AllRoles = await userRoleRepository.GetWhere(o => !o.IsDeleted && o.UserID == UserID && o.AuthorizeType == type && o.FormName == FormName);
+            if (AllRoles.Count() > 0)
+                await userRoleRepository.Remove(AllRoles.First().UserRoleID, removerRef);
+        }
+
+        public override async Task ChangePassword(int UserID, string newPassword)
+        {
+            var currentUser = await repository.FirstOrDefault(o => o.UserID == UserID);
+            if (currentUser != null)
+            {
+                currentUser.Password = newPassword;
+                await repository.Update(currentUser, currentUser.UserID);
+            }
+        }
+
+        public override async Task<bool> CheckRoleIsExist(int UserID, string FormName, AuthType type)
+        {
+            var AllRoles = await userRoleRepository.GetWhere(o => !o.IsDeleted && o.UserID == UserID && o.AuthorizeType == type && o.FormName == FormName);
+            return (AllRoles.Count() > 0);
+
+        }
+
+        public override async Task<User> GetUserByUserName(string userName)
+        {
+            var user = await repository.FirstOrDefault(o => o.UserName.ToLower() == userName.ToLower() && !o.IsDeleted);
+            return user;
         }
     }
 }

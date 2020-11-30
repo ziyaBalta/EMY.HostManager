@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EMY.HostManager.DataAccess.Migrations
 {
     [DbContext(typeof(HostManagerContext))]
-    [Migration("20201129192604_v1")]
+    [Migration("20201130040252_v1")]
     partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -230,9 +230,6 @@ namespace EMY.HostManager.DataAccess.Migrations
 
                     b.Property<string>("PasswordStored")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("UserCode")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserName")
                         .HasColumnType("TEXT");

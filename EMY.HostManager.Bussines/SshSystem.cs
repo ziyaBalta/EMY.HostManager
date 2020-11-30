@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace EMY.HostManager.Bussines
 {
-  public  class SshSystem
+    public class SshSystem
     {
         public string DestinationAdress { get; set; }
         public int Port { get; set; }
@@ -93,7 +93,7 @@ namespace EMY.HostManager.Bussines
             return true;
         }
 
-        public bool RunSSHCode(string Code)
+        public bool RunSSHCode(string Code, ref string resultmessage)
         {
             Chilkat.Ssh ssh = new Chilkat.Ssh();
 
@@ -116,14 +116,69 @@ namespace EMY.HostManager.Bussines
             }
 
             //  Send some commands and get the output.
-            string strOutput = ssh.QuickCommand(Code, "ansi");
+            resultmessage = ssh.QuickCommand(Code, "ansi");
             if (ssh.LastMethodSuccess != true)
             {
                 Debug.WriteLine(ssh.LastErrorText);
                 return false;
             }
-            Debug.WriteLine(strOutput);
+            Debug.WriteLine(resultmessage);
 
+
+            return true;
+        }
+
+        public bool UploadStringWithSCP(string content, string destFileName)
+        {
+
+            Chilkat.Ssh ssh = new Chilkat.Ssh();
+            bool success = ssh.Connect(DestinationAdress, Port);
+            if (success != true)
+            {
+                Debug.WriteLine(ssh.LastErrorText);
+                return false;
+            }
+
+            // Wait a max of 5 seconds when reading responses..
+            ssh.IdleTimeoutMs = 5000;
+
+            // Authenticate using login/password:
+            success = ssh.AuthenticatePw(UserName, _password);
+            if (success != true)
+            {
+                Debug.WriteLine(ssh.LastErrorText);
+                return false;
+            }
+
+            // Once the SSH object is connected and authenticated, we use it
+            // as the underlying transport in our SCP object.
+            Chilkat.Scp scp = new Chilkat.Scp();
+
+            success = scp.UseSsh(ssh);
+            if (success != true)
+            {
+                Debug.WriteLine(scp.LastErrorText);
+                return false;
+            }
+
+            // The utf-8 byte representation of the string will be uploaded.
+            // See https://www.chilkatsoft.com/p/p_463.asp for a list of valid charsets.
+            string charset = "utf-8";
+
+            // This uploads to the "uploads/text" directory relative to the HOME
+            // directory of the SSH user account.  
+            // Note: The remote target directory must already exist on the SSH server.
+            success = scp.UploadString(destFileName, content, charset);
+            if (success != true)
+            {
+                Debug.WriteLine(scp.LastErrorText);
+                return false;
+            }
+
+            Debug.WriteLine("SCP upload string success.");
+
+            // Disconnect
+            ssh.Disconnect();
 
             return true;
         }

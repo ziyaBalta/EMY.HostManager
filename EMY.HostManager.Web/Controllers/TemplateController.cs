@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace EMY.HostManager.Web.Controllers
 {
+    [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme)]
     public class TemplateController : Controller
     {
         HostManagerFactory factory;
