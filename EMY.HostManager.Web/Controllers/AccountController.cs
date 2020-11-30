@@ -178,7 +178,7 @@ namespace EMY.HostManager.Web.Controllers
         [HttpGet, Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
         public async Task<IActionResult> Activate(int UserID)
         {
-            await factory.Users.Activate(UserID, int.Parse(User.Identity.Name);
+            await factory.Users.Activate(UserID, int.Parse(User.Identity.Name));
             return Redirect("UserList");
 
         }
@@ -186,7 +186,7 @@ namespace EMY.HostManager.Web.Controllers
         [HttpGet, Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
         public async Task<IActionResult> DeActivate(int UserID)
         {
-            await factory.Users.DeActivate(UserID, int.Parse(User.Identity.Name);
+            await factory.Users.DeActivate(UserID, int.Parse(User.Identity.Name));
             return Redirect("UserList");
 
         }

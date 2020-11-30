@@ -57,7 +57,7 @@ namespace EMY.HostManager.Bussines.Concrete
         public override async Task<IEnumerable<string>> GetAllRoles(int UserID)
         {
             var user = await repository.GetByPrimaryKey(UserID);
-            if (user == null || !user.IsActive || !user.IsDeleted) return (new string[] { });
+            if (user == null || !user.IsActive || user.IsDeleted) return (new string[] { });
             var AllRoles = await userRoleRepository.GetWhere(o => !o.IsDeleted && o.UserID == UserID);
             List<string> roles = new List<string>();
             return AllRoles.ToList().Select(o => o.GetAuthCode);
