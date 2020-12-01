@@ -1,0 +1,165 @@
+﻿@model List<string>
+@{
+    string[] FormList = new string[] { "Domain", "Server", "Template" };
+
+    ViewData["Title"] = "Authorize  ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="mt-4">Authorize</h1>
+<table id="checkboxes" class="table table-hover table-responsive-sm">
+    <thead class="thead-dark">
+        <tr>
+            <th colspan="8">Authorize List ( @ViewBag.User )</th>
+        </tr>
+        <tr>
+            <th>
+                Form Name
+            </th>
+            <th>
+                Show
+            </th>
+            <th>
+                Add
+            </th>
+            <th>
+                Delete
+            </th>
+            <th>
+                Update
+            </th>
+            <th>
+                All
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Admin</td>
+            <td>
+                <input type="checkbox" id="AdminShow" class="form-check-input" @Html.Raw(Model.Exists(o => o == "AdminShow") ? "checked='checked'" : "") disabled />
+                <label class="form-check-label" for="AdminShow">
+                    Show
+                </label>
+            </td>
+            <td>
+                <input type="checkbox" id="AdminAdd" class="form-check-input" @Html.Raw(Model.Exists(o => o == "AdminAdd") ? "checked='checked'" : "") disabled />
+                <label class="form-check-label" for="AdminAdd">
+                    Add
+                </label>
+            </td>
+            <td>
+                <input type="checkbox" id="AdminDel" class="form-check-input" @Html.Raw(Model.Exists(o => o == "AdminDel") ? "checked='checked'" : "") disabled />
+                <label class="form-check-label" for="AdminDel">
+                    Delete
+                </label>
+            </td>
+            <td>
+                <input type="checkbox" id="AdminUp" class="form-check-input" @Html.Raw(Model.Exists(o => o == "AdminUp") ? "checked='checked'" : "") disabled />
+                <label class="form-check-label" for="AdminUp">
+                    Update
+                </label>
+            </td>
+            <td>
+                <input onchange="changedRole(this.id,this.formName,this.authType);" type="checkbox" id="AdminAll" data-formname='Admin' data-authtype="5" class="form-check-input" @Html.Raw(Model.Exists(o => o == "AdminFull") ? "checked='checked'" : "") />
+                <label class="form-check-label" for="AdminAll">
+                    Full
+                </label>
+            </td>
+        </tr>
+
+        @foreach (var formName in FormList)
+        {
+            <tr>
+                <td>@formName</td>
+                <td>
+                    <input onchange="changedRole(this.id);" data-formname='@formName' data-authtype="1" type="checkbox" id='@Html.Raw(formName+"Show")' class="form-check-input" @Html.Raw(Model.Exists(o => o == formName + "Show") ? "checked='checked'" : "") />
+                    <label class="form-check-label" for='@Html.Raw(formName+"Show")'>
+                        Show
+                    </label>
+                </td>
+                <td>
+                    <input onchange="changedRole(this.id);" data-formname='@formName' data-authtype="2" type="checkbox" id='@Html.Raw(formName+"Add")' class="form-check-input" @Html.Raw(Model.Exists(o => o == formName + "Add") ? "checked='checked'" : "") />
+                    <label class="form-check-label" for='@Html.Raw(formName+"Add")'>
+                        Add
+                    </label>
+                </td>
+                <td>
+                    <input onchange="changedRole(this.id);" data-formname='@formName' data-authtype="3" type="checkbox" id='@Html.Raw(formName+"Del")' class="form-check-input" @Html.Raw(Model.Exists(o => o == formName + "Del") ? "checked='checked'" : "") />
+                    <label class="form-check-label" for='@Html.Raw(formName+"Del")'>
+                        Delete
+                    </label>
+                </td>
+                <td>
+                    <input onchange="changedRole(this.id);" data-formname='@formName' data-authtype="4" type="checkbox" id='@Html.Raw(formName+"Up")' class="form-check-input" @Html.Raw(Model.Exists(o => o == formName + "Up") ? "checked='checked'" : "") />
+                    <label class="form-check-label" for='@Html.Raw(formName+"Up")'>
+                        Update
+                    </label>
+                </td>
+                <td>
+                    <input onchange="changedRole(this.id);" data-formname="@formName" data-authtype="5" type="checkbox" id='@Html.Raw(formName+"Full")' class="form-check-input" @Html.Raw(Model.Exists(o => o == formName + "Full") ? "checked='checked'" : "") />
+                    <label class="form-check-label" for='@Html.Raw(formName+"Full")'>
+                        Full
+                    </label>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+<script>
+    function changedRole(id) {
+        var result = document.getElementById(id).checked;
+        var userID = @Html.Raw(ViewBag.UserID) ;
+
+        const obj = document.querySelector('#' + id);
+
+
+
+        if (result) {
+            checked(obj.dataset.formname, obj.dataset.authtype, userID, 'AddRole');
+        }
+        else {
+            checked(obj.dataset.formname, obj.dataset.authtype, userID,'DeleteRole');
+        }
+    }
+
+    function checked(formName,roleType,uid,method) {
+
+        $.ajax({
+            url: "/Account/"+method,
+            type: "POST",
+            data:
+            {
+                UserID: uid,
+                FormName: formName,
+                rollType: roleType
+            },
+            success: function (data) {
+                console.log(data);
+            }, error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr);
+            }
+
+        });
+    }
+
+    function unchecked(id, uid) {
+
+    }
+
+    function getParams(url) {
+        var params = {};
+        var parser = document.createElement('a');
+        parser.href = url;
+        var query = parser.search.substring(1);
+        var vars = query.split('&');
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split('=');
+            params[pair[0]] = decodeURIComponent(pair[1]);
+        }
+        return params;
+    };
+</script>

@@ -154,6 +154,16 @@ namespace EMY.HostManager.Web.Controllers
             User usr = new User();
             return View(usr);
         }
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
+        public async Task<IActionResult> RoleManager(int UserID)
+        {
+            var userroles = await factory.Users.GetAllRoles(UserID);
+            ViewBag.UserID = UserID;
+            var user = await factory.Users.GetByUserID(UserID);
+            ViewBag.User = user.GetName;
+            return View(userroles.ToList());
+        }
 
         [HttpPost]
         [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
@@ -197,21 +207,23 @@ namespace EMY.HostManager.Web.Controllers
             await factory.Users.ChangePassword(UserID, "123456");
             return Redirect("UserList");
         }
-
+        [HttpPost]
         [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
-        public async Task<IActionResult> AddRole(int UserID, string RoleName, AuthType rollType)
+        public async Task<IActionResult> AddRole(int UserID, string FormName, AuthType rollType)
         {
-            bool existRole = await factory.Users.CheckRoleIsExist(UserID, RoleName, rollType);
+
+            bool existRole = await factory.Users.CheckRoleIsExist(UserID, FormName, rollType);
             if (existRole) return ValidationProblem("Role already exist in system!");
             var authrole = new UserRole()
             {
-                FormName = RoleName,
+                FormName = FormName,
                 AuthorizeType = rollType,
                 UserID = UserID
             };
             await factory.Users.AddRole(authrole, UserID);
             return Ok("Role added!");
         }
+        [HttpPost]
         [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme, Roles = "AdminFull")]
         public async Task<IActionResult> DeleteRole(int UserID, string FormName, AuthType rollType)
         {
