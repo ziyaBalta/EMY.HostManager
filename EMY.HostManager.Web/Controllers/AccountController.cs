@@ -80,7 +80,16 @@ namespace EMY.HostManager.Web.Controllers
         [Authorize(AuthenticationSchemes = SystemStatics.DefaultScheme)]
         public async Task<IActionResult> LogOut()
         {
+            if (HttpContext.Request.Cookies.Count > 0)
+            {
+                var siteCookies = HttpContext.Request.Cookies.Where(c => c.Key.Contains(".AspNetCore.") || c.Key.Contains("Microsoft.Authentication"));
+                foreach (var cookie in siteCookies)
+                {
+                    Response.Cookies.Delete(cookie.Key);
+                }
+            }
             await HttpContext.SignOutAsync(scheme: SystemStatics.DefaultScheme);
+            HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
 
